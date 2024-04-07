@@ -1,50 +1,64 @@
 package org.example.board;
 
-import org.example.pieces.PieceType;
+import org.example.pieces.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class Board {
 
-    public int[][] setupBoard(){
+    public Piece[][] setupBoard(){
 
-        int[][] chessBoard = new int[8][8];
+        Piece[][] chessBoard = new Piece[8][8];
 
         for (int col = 0; col < 8; col++) {
-            chessBoard[1][col] = PieceType.BLACK_PAWN.value;
-            chessBoard[6][col] = PieceType.WHITE_PAWN.value;
+            chessBoard[1][col] = new Pawn(false);
+            chessBoard[6][col] = new Pawn(true);
         }
-            chessBoard[0][0] = PieceType.BLACK_ROOK.value;
-            chessBoard[0][1] = PieceType.BLACK_KNIGHT.value;
-            chessBoard[0][2] = PieceType.BLACK_BISHOP.value;
-            chessBoard[0][3] = PieceType.BLACK_QUEEN.value;
-            chessBoard[0][4] = PieceType.BLACK_KING.value;
-            chessBoard[0][5] = PieceType.BLACK_BISHOP.value;
-            chessBoard[0][6] = PieceType.BLACK_KNIGHT.value;
-            chessBoard[0][7] = PieceType.BLACK_ROOK.value;
 
-            chessBoard[7][0] = PieceType.WHITE_ROOK.value;
-            chessBoard[7][1] = PieceType.WHITE_KNIGHT.value;
-            chessBoard[7][2] = PieceType.WHITE_BISHOP.value;
-            chessBoard[7][3] = PieceType.WHITE_QUEEN.value;
-            chessBoard[7][4] = PieceType.WHITE_KING.value;
-            chessBoard[7][5] = PieceType.WHITE_BISHOP.value;
-            chessBoard[7][6] = PieceType.WHITE_KNIGHT.value;
-            chessBoard[7][7] = PieceType.WHITE_ROOK.value;
+            chessBoard[0][0] = new Rook(false);
+            chessBoard[0][1] = new Knight(false);
+            chessBoard[0][2] = new Bishop(false);
+            chessBoard[0][3] = new Queen(false);
+            chessBoard[0][4] = new King(false);
+            chessBoard[0][5] = new Bishop(false);
+            chessBoard[0][6] = new Knight(false);
+            chessBoard[0][7] = new Rook(false);
+
+            chessBoard[7][0] = new Rook(true);
+            chessBoard[7][1] = new Knight(true);
+            chessBoard[7][2] = new Bishop(true);
+            chessBoard[7][3] = new Queen(true);
+            chessBoard[7][4] = new King(true);
+            chessBoard[7][5] = new Bishop(true);
+            chessBoard[7][6] = new Knight(true);
+            chessBoard[7][7] = new Rook(true);
 
         return chessBoard;
     }
 
+    public static ImageIcon printPiecesImages(PieceType type){
 
-    public void printBoard(int[][] board){
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                System.out.print(board[i][j]+"");
-            }
-            System.out.println(" ");
+        String pieceTypeName = String.valueOf(type);
+
+        if(pieceTypeName.isEmpty()){
+            return null;
         }
-
+        try {
+            InputStream inputStream = Board.class.getResourceAsStream("/img/" + pieceTypeName + ".png");
+            if (inputStream != null) {
+                BufferedImage icon = ImageIO.read(inputStream);
+                if (icon != null) {
+                    return new ImageIcon(icon.getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                }
+            }
+        }catch (IOException e) {
+            System.out.println("Nie można załadować obrazka: " + e);
+        }
+        return null;
     }
-
-
 }

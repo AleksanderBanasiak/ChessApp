@@ -1,15 +1,20 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.board.Board;
-import org.example.pieces.PieceType;
+import org.example.pieces.Piece;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.example.pieces.PieceTypeManager.getPieceType;
+import static org.example.board.Board.printPiecesImages;
 
+@Getter
+@Setter
 public class ChessGame {
-
 
     JFrame frame = new JFrame("Chess Game by Aleksander Banasiak");
 
@@ -19,11 +24,15 @@ public class ChessGame {
 
     Board boardService = new Board();
 
-    int[][] chessBoard = boardService.setupBoard();
+    Piece[][] chessBoard = boardService.setupBoard();
 
+    List<Integer> moves = new ArrayList<>();
 
+    Color[][] originalColors = new Color[8][8];
 
-
+    private int selectedRow = -1;
+    private int selectedCol = -1;
+    private boolean isWhiteTurn = true;
 
     public void game(){
         configureFrame();
@@ -51,51 +60,79 @@ public class ChessGame {
         frame.setLayout(new BorderLayout());
     }
 
-    private void configureTile(){
-
-    }
-
     public void createBoard(){
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 JButton tile = new JButton();
-
+                if(chessBoard[row][col] != null){
+                    tile.setIcon(printPiecesImages(chessBoard[row][col].pieceType()));
+                }
                 board[row][col] = tile;
                 jPanel.add(tile);
-
-                Color color = (col+row) % 2 ==0 ? new Color(235, 236, 208) : new Color(119, 149, 86);
-
-                tile.setBackground(color);
+                Color originalColor = (col + row) % 2 == 0 ? new Color(235, 236, 208) : new Color(119, 149, 86);
+                originalColors[row][col] = originalColor;
+                tile.setBackground(originalColor);
                 tile.setFocusable(false);
                 tile.setPreferredSize(new Dimension(125, 125));
-
-                int currentRow = row;
-                int currentCol = col;
-
-
-                tile.addActionListener(e -> {
-                    int pieceVal =  chessBoard[currentRow][currentCol];
-
-                    PieceType pieceType = getPieceType(pieceVal);
-
-                    // i tutaj klasa show possible moves
-
-                    // i chyba najlepiej ze pobiera daną klase figury przez enuma (ale jako interfejs piece)
-
-                    // i w interfejsie są metody z pokazywaniem tych możliwych ruchów 
-
-                    System.out.println(pieceType);
-
-                    System.out.println("Wybrany przycisk znajduje się na pozycji: [" + ( currentRow +1) + "," + (currentCol+1) + "]");
-                });
+                TileMouseListener listener = new TileMouseListener(this, row, col);
+                tile.addMouseListener(listener);
             }
         }
     }
 
 
 
+    public void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
 
 
 
+        chessBoard[toRow][toCol] = chessBoard[fromRow][fromCol];
+        chessBoard[fromRow][fromCol] = null;
+        board[toRow][toCol].setIcon(board[fromRow][fromCol].getIcon());
+        board[fromRow][fromCol].setIcon(null);
+
+//        selectedRow = toRow;
+//        selectedCol = toCol;
+
+
+        resetBoardColors();
+        rotateBoard();
+
+
+
+
+    }
+    public void resetBoardColors() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j].setBackground(originalColors[i][j]);
+            }
+        }
+    }
+    private void rotateBoard() {
+        Piece[][] tempBoard = new Piece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                tempBoard[i][j] = chessBoard[7 - i][7 - j];
+            }
+        }
+        chessBoard = tempBoard;
+        updateBoardIcons();
+    }
+    private void updateBoardIcons() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessBoard[i][j] != null) {
+                    board[i][j].setIcon(printPiecesImages(chessBoard[i][j].pieceType()));
+                } else {
+                    board[i][j].setIcon(null);
+                }
+            }
+        }
+    }
 }
+
+
+
+
