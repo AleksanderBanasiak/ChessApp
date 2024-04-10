@@ -13,6 +13,8 @@ public class BoardMoves {
         }
         return new int[8][8];
     }
+
+
     public static int[] showSelectedPieceSpot(Piece piece, Piece[][] chessBoard){
         int[] spot = new int[2];
         for (int i = 0; i < chessBoard.length; i++) {

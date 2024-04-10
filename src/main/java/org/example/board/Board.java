@@ -19,7 +19,6 @@ public class Board {
             chessBoard[1][col] = new Pawn(false);
             chessBoard[6][col] = new Pawn(true);
         }
-
             chessBoard[0][0] = new Rook(false);
             chessBoard[0][1] = new Knight(false);
             chessBoard[0][2] = new Bishop(false);
@@ -28,6 +27,9 @@ public class Board {
             chessBoard[0][5] = new Bishop(false);
             chessBoard[0][6] = new Knight(false);
             chessBoard[0][7] = new Rook(false);
+
+            chessBoard[4][7] = new Bishop(true);
+
 
             chessBoard[7][0] = new Rook(true);
             chessBoard[7][1] = new Knight(true);

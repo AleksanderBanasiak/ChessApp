@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.board.Board;
 import org.example.pieces.Piece;
+import org.example.pieces.PieceType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.board.Board.printPiecesImages;
+import static org.example.board.BoardMoves.showValidMoves;
 
 @Getter
 @Setter
@@ -29,6 +31,7 @@ public class ChessGame {
     List<Integer> moves = new ArrayList<>();
 
     Color[][] originalColors = new Color[8][8];
+
 
     private int selectedRow = -1;
     private int selectedCol = -1;
@@ -85,23 +88,13 @@ public class ChessGame {
 
     public void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
 
-
-
         chessBoard[toRow][toCol] = chessBoard[fromRow][fromCol];
         chessBoard[fromRow][fromCol] = null;
         board[toRow][toCol].setIcon(board[fromRow][fromCol].getIcon());
         board[fromRow][fromCol].setIcon(null);
 
-//        selectedRow = toRow;
-//        selectedCol = toCol;
-
-
         resetBoardColors();
         rotateBoard();
-
-
-
-
     }
     public void resetBoardColors() {
         for (int i = 0; i < 8; i++) {
@@ -131,6 +124,9 @@ public class ChessGame {
             }
         }
     }
+
+
+
 }
 
 
