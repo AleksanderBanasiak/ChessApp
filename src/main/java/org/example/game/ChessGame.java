@@ -1,10 +1,9 @@
-package org.example;
+package org.example.game;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.example.board.Board;
-import org.example.pieces.Piece;
-import org.example.pieces.PieceType;
+import org.example.pieces.piece.Piece;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.board.Board.printPiecesImages;
-import static org.example.board.BoardMoves.showValidMoves;
 
 @Getter
 @Setter

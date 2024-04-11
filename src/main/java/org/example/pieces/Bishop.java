@@ -1,6 +1,8 @@
 package org.example.pieces;
 
 import org.example.board.BoardMoves;
+import org.example.pieces.piece.Piece;
+import org.example.pieces.piece.PieceType;
 
 public class Bishop implements Piece {
 

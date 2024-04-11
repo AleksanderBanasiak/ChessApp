@@ -1,8 +1,10 @@
 package org.example.pieces;
 
 import org.example.board.BoardMoves;
+import org.example.pieces.piece.Piece;
+import org.example.pieces.piece.PieceType;
 
-public class Queen implements Piece{
+public class Queen implements Piece {
     private final PieceType pieceType;
     private final BoardMoves boardMoves;
 

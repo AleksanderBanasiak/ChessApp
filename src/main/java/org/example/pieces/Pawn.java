@@ -1,5 +1,8 @@
 package org.example.pieces;
 
+import org.example.pieces.piece.Piece;
+import org.example.pieces.piece.PieceType;
+
 public class Pawn implements Piece {
     private final PieceType pieceType;
 
@@ -20,18 +23,23 @@ public class Pawn implements Piece {
     }
 
 
-    private void pawnMoves(int[][] tab, Piece[][] chessBoard, int[] pieceSpot,boolean isWhite){
-        if (pieceSpot[0] == 6) {
-            ifLegalAdd((pieceSpot[0] - 1), pieceSpot[1], tab, chessBoard, isWhite);
-            ifLegalAdd((pieceSpot[0] - 2), pieceSpot[1], tab, chessBoard, isWhite);
-        } else if (pieceSpot[0] - 1 >= 0 && chessBoard[pieceSpot[0] - 1][pieceSpot[1]] == null) {
-            ifLegalAdd((pieceSpot[0] - 1), pieceSpot[1], tab, chessBoard, isWhite);
+    private void pawnMoves(int[][] tab, Piece[][] chessBoard, int[] pieceSpot,boolean isWhite) {
+        int row = pieceSpot[0];
+        int col = pieceSpot[1];
+        if (row == 6 && chessBoard[row - 1][col] == null) {
+            ifLegalAdd((row - 1), col, tab, chessBoard, isWhite);
+            if (chessBoard[row - 2][col] == null){
+                ifLegalAdd((row - 2), col, tab, chessBoard, isWhite);
+            }
         }
-        if (pieceSpot[0] - 1 >= 0 && pieceSpot[1] - 1 >= 0 && chessBoard[pieceSpot[0] - 1][pieceSpot[1] - 1] != null) {
-            ifLegalAdd((pieceSpot[0] - 1), (pieceSpot[1] - 1), tab, chessBoard, isWhite);
+        else if (row - 1 >= 0 && chessBoard[row - 1][col] == null) {
+            ifLegalAdd((row - 1), col, tab, chessBoard, isWhite);
         }
-        if (pieceSpot[0] - 1 >= 0 && pieceSpot[1] + 1 < 8 && chessBoard[pieceSpot[0] - 1][pieceSpot[1] + 1] != null) {
-            ifLegalAdd((pieceSpot[0] - 1), (pieceSpot[1] + 1), tab, chessBoard, isWhite);
+        if (row - 1 >= 0 && col - 1 >= 0 && chessBoard[row - 1][col - 1] != null) {
+            ifLegalAdd((row - 1), (col - 1), tab, chessBoard, isWhite);
+        }
+        if (row - 1 >= 0 && col + 1 < 8 && chessBoard[row - 1][col + 1] != null) {
+            ifLegalAdd((row - 1), (col + 1), tab, chessBoard, isWhite);
         }
     }
 
@@ -42,7 +50,7 @@ public class Pawn implements Piece {
 
         if (row >= 0 && row < numRows && col >= 0 && col < numCols) {
             if (isWhite) {
-                if (chessBoard[row][col] == null || chessBoard[row][col].pieceType().name().startsWith("B")) {
+                if (chessBoard[row][col] == null  || chessBoard[row][col].pieceType().name().startsWith("B")) {
                     tab[row][col] = 1;
                 }
             } else {

@@ -1,4 +1,4 @@
-package org.example.pieces;
+package org.example.pieces.piece;
 
 public interface Piece {
     PieceType pieceType();

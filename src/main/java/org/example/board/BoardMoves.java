@@ -1,6 +1,6 @@
 package org.example.board;
 
-import org.example.pieces.Piece;
+import org.example.pieces.piece.Piece;
 
 public class BoardMoves {
 
