@@ -30,6 +30,8 @@ public class ChessGame {
 
     Color[][] originalColors = new Color[8][8];
 
+    protected static int moveCount = 0;
+
 
     private int selectedRow = -1;
     private int selectedCol = -1;
@@ -41,6 +43,14 @@ public class ChessGame {
         createBoard();
         displayFrame();
     }
+
+    public void restartGame() {
+        chessBoard = boardService.setupBoard();
+        resetBoardColors();
+        isWhiteTurn = true;
+        updateBoardIcons();
+    }
+
 
     private void displayFrame() {
         frame.setVisible(true);
