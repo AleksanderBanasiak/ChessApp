@@ -4,11 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.board.Board;
 import org.example.pieces.piece.Piece;
+import org.example.pieces.piece.PieceType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.board.Board.printPiecesImages;
 
@@ -32,6 +35,8 @@ public class ChessGame {
 
     protected static int moveCount = 0;
 
+    protected static Map<Piece, Boolean> isPieceMove = new HashMap<>();
+
 
     private int selectedRow = -1;
     private int selectedCol = -1;
@@ -42,6 +47,7 @@ public class ChessGame {
         configureBoardPanel();
         createBoard();
         displayFrame();
+        addPiecesToMap();
     }
 
     public void restartGame() {
@@ -95,15 +101,53 @@ public class ChessGame {
 
 
     public void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+        Piece piece = chessBoard[fromRow][fromCol];
+        markPiece(piece);
 
-        chessBoard[toRow][toCol] = chessBoard[fromRow][fromCol];
-        chessBoard[fromRow][fromCol] = null;
-        board[toRow][toCol].setIcon(board[fromRow][fromCol].getIcon());
-        board[fromRow][fromCol].setIcon(null);
+
+        if(piece != null && isPiece(piece) && kingMove(fromCol, toCol, -1)) {
+            doCastling(fromRow, fromCol, toRow, toCol, piece, 7, -1);
+        }
+        else if(piece != null && isPiece(piece) && kingMove(fromCol, toCol, 1)){
+
+            doCastling(fromRow, fromCol, toRow, toCol, piece, 0, 1);
+
+        }else {
+            chosenPieceMove(fromRow, fromCol, toRow, toCol, chessBoard[fromRow][fromCol]);
+        }
 
         resetBoardColors();
         rotateBoard();
     }
+
+    private void doCastling(int fromRow, int fromCol, int toRow, int toCol, Piece piece, int where, int where2) {
+        chosenPieceMove(fromRow, fromCol, toRow, toCol, piece);
+
+        chosenPieceMove(7, where, toRow, toCol + where2, chessBoard[7][where]);
+    }
+
+    private void chosenPieceMove(int fromRow, int fromCol, int toRow, int toCol, Piece piece) {
+        chessBoard[toRow][toCol] = piece;
+        chessBoard[fromRow][fromCol] = null;
+
+        board[toRow][toCol].setIcon(board[fromRow][fromCol].getIcon());
+        board[fromRow][fromCol].setIcon(null);
+    }
+
+    private static boolean kingMove(int fromCol, int toCol, int when) {
+        return (toCol == fromCol - (when *2)) ||  (toCol == fromCol - (when *3));
+    }
+
+    private static boolean isPiece(Piece piece) {
+        return piece.pieceType() == PieceType.BLACK_KING || piece.pieceType() == PieceType.WHITE_KING;
+    }
+
+    private static void markPiece(Piece piece) {
+        if(isPieceMove.containsKey(piece)){
+            isPieceMove.put(piece, true);
+        }
+    }
+
     public void resetBoardColors() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -131,6 +175,18 @@ public class ChessGame {
                 }
             }
         }
+    }
+
+
+    private void addPiecesToMap(){
+
+        isPieceMove.put(chessBoard[0][0], false);
+        isPieceMove.put(chessBoard[0][7], false);
+        isPieceMove.put(chessBoard[0][4], false);
+        isPieceMove.put(chessBoard[7][4], false);
+        isPieceMove.put(chessBoard[7][0], false);
+        isPieceMove.put(chessBoard[7][7], false);
+
     }
 
 

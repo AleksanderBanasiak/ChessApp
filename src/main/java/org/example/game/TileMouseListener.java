@@ -1,6 +1,7 @@
 package org.example.game;
 
 import org.example.pieces.piece.Piece;
+import org.example.pieces.piece.PieceType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,23 +80,71 @@ public class TileMouseListener extends MouseAdapter {
         List<int[][]> allLegalMoves = new ArrayList<>();
         List<Piece> allPieces = new ArrayList<>();
 
+
+
+
+
         for (Piece[] row : chessGame.chessBoard) {
             for (Piece currentPiece : row) {
                 if (currentPiece != null) {
                     boolean isPieceWhite = currentPiece.pieceType().name().startsWith("W");
                     if ((isWhiteTurn && isPieceWhite) || (!isWhiteTurn && !isPieceWhite)) {
                         allPieces.add(currentPiece);
+
                     }
                 }
             }
         }
-
         for (Piece piece : allPieces) {
             int[][] validMoves = piece.displayValidMoves(piece, chessGame.chessBoard, showSelectedPieceSpot(piece, chessGame.chessBoard));
             allLegalMoves.add(validMoves);
         }
+        Map<Piece, List<int[]>> pieceListMap = mapAllSingleMovesForSpecificPiece(allLegalMoves, allPieces);
 
-        return mapAllSingleMovesForSpecificPiece(allLegalMoves, allPieces);
+        Map<Piece, Boolean> isPieceMove = ChessGame.isPieceMove;
+
+        prepareCastling(isPieceMove, pieceListMap);
+
+        return pieceListMap;
+    }
+
+    private void prepareCastling(Map<Piece, Boolean> isPieceMove, Map<Piece, List<int[]>> pieceListMap) {
+        int[] kingPosition = checkHandler.getKingPosition(isWhiteTurn, chessGame.chessBoard);
+
+        Piece leftRook = null;
+        Piece rightRook = null;
+        Piece king = chessGame.chessBoard[kingPosition[0]][kingPosition[1]];
+
+        if(chessGame.chessBoard[7][0] !=null) {
+            if (chessGame.chessBoard[7][0].pieceType().equals(PieceType.BLACK_ROOK) ||
+                    chessGame.chessBoard[7][0].pieceType().equals(PieceType.WHITE_ROOK)) {
+                leftRook = chessGame.chessBoard[7][0];
+            }
+        }
+        if(chessGame.chessBoard[7][7] !=null){
+            if(chessGame.chessBoard[7][7].pieceType().equals(PieceType.BLACK_ROOK) ||
+                    chessGame.chessBoard[7][7].pieceType().equals(PieceType.WHITE_ROOK)){
+                rightRook = chessGame.chessBoard[7][7];
+            }
+        }
+        castling(isPieceMove, king, leftRook, pieceListMap, rightRook);
+    }
+
+    private void castling(Map<Piece, Boolean> isPieceMove, Piece king, Piece leftRook, Map<Piece, List<int[]>> pieceListMap, Piece rightRook) {
+        if(king != null && !isPieceMove.get(king)){
+            if(rightRook != null && !isPieceMove.get(rightRook)){
+                if((!isWhiteTurn && chessGame.chessBoard[7][6] == null && chessGame.chessBoard[7][5] == null && chessGame.chessBoard[7][4] == null) ||
+                        (isWhiteTurn && chessGame.chessBoard[7][5] == null && chessGame.chessBoard[7][6] == null)) {
+                    addToMap(pieceListMap, king, new int[]{7, 6});
+                }
+            }
+            if(leftRook != null && !isPieceMove.get(leftRook)){
+                if((!isWhiteTurn && chessGame.chessBoard[7][1] == null && chessGame.chessBoard[7][2] == null) ||
+                        (isWhiteTurn && chessGame.chessBoard[7][1] == null && chessGame.chessBoard[7][2] == null && chessGame.chessBoard[7][3] == null)){
+                    addToMap(pieceListMap, king, new int[]{7, 1});
+                }
+            }
+        }
     }
 
     private Map<Piece, List<int[]>> mapAllSingleMovesForSpecificPiece(List<int[][]> allLegalMoves, List<Piece> allPieces) {
