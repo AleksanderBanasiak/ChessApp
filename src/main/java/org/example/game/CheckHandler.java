@@ -17,8 +17,9 @@ public class CheckHandler {
         this.chessGame = chessGame;
     }
 
-    public void handleCheckmate() {
-        if(chessGame.isWhiteTurn()){
+    public void handleCheckmate(boolean isWhiteTurn) {
+
+        if(isWhiteTurn){
             JOptionPane.showMessageDialog(chessGame.frame, "Checkmate! Black wins");
             restartGame();
         }else {

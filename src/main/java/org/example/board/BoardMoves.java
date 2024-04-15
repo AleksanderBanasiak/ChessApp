@@ -4,16 +4,6 @@ import org.example.pieces.piece.Piece;
 
 public class BoardMoves {
 
-    public static int[][] showValidMoves(int currentRow, int currentCol, Piece[][] chessBoard, boolean isWhiteTurn){
-        if(chessBoard[currentRow][currentCol] != null){
-            Piece pieceVal = chessBoard[currentRow][currentCol];
-            if(pieceVal.pieceType().name().startsWith("W") && isWhiteTurn || pieceVal.pieceType().name().startsWith("B") && !isWhiteTurn){
-                return pieceVal.displayValidMoves(pieceVal, chessBoard, showSelectedPieceSpot(pieceVal, chessBoard));
-            }
-        }
-        return new int[8][8];
-    }
-
 
     public static int[] showSelectedPieceSpot(Piece piece, Piece[][] chessBoard){
         int[] spot = new int[2];

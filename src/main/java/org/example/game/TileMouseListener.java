@@ -35,13 +35,14 @@ public class TileMouseListener extends MouseAdapter {
         JButton clickedButton = (JButton) e.getSource();
         isWhiteTurn =  ChessGame.moveCount % 2 == 0;
         handleMove(clickedButton);
+
     }
 
     private void handleMove(JButton clickedButton) {
         Map<Piece, List<int[]>> allValidDefensiveMoves = getAllValidDefensiveMoves(getAllDefensiveMoves());
 
         if (allValidDefensiveMoves.isEmpty()) {
-           checkHandler.handleCheckmate();
+            checkHandler.handleCheckmate(isWhiteTurn);
         } else {
             if (chessGame.getSelectedRow() == -1) {
                 selectDefensiveMoveAndShowValidMoves(allValidDefensiveMoves);
@@ -77,12 +78,9 @@ public class TileMouseListener extends MouseAdapter {
     }
 
     private Map<Piece, List<int[]>> getAllDefensiveMoves() {
+
         List<int[][]> allLegalMoves = new ArrayList<>();
         List<Piece> allPieces = new ArrayList<>();
-
-
-
-
 
         for (Piece[] row : chessGame.chessBoard) {
             for (Piece currentPiece : row) {
@@ -95,20 +93,26 @@ public class TileMouseListener extends MouseAdapter {
                 }
             }
         }
+
+
         for (Piece piece : allPieces) {
             int[][] validMoves = piece.displayValidMoves(piece, chessGame.chessBoard, showSelectedPieceSpot(piece, chessGame.chessBoard));
             allLegalMoves.add(validMoves);
         }
         Map<Piece, List<int[]>> pieceListMap = mapAllSingleMovesForSpecificPiece(allLegalMoves, allPieces);
 
+
         Map<Piece, Boolean> isPieceMove = ChessGame.isPieceMove;
 
+
         prepareCastling(isPieceMove, pieceListMap);
+
 
         return pieceListMap;
     }
 
     private void prepareCastling(Map<Piece, Boolean> isPieceMove, Map<Piece, List<int[]>> pieceListMap) {
+
         int[] kingPosition = checkHandler.getKingPosition(isWhiteTurn, chessGame.chessBoard);
 
         Piece leftRook = null;
@@ -121,24 +125,27 @@ public class TileMouseListener extends MouseAdapter {
                 leftRook = chessGame.chessBoard[7][0];
             }
         }
+
         if(chessGame.chessBoard[7][7] !=null){
             if(chessGame.chessBoard[7][7].pieceType().equals(PieceType.BLACK_ROOK) ||
                     chessGame.chessBoard[7][7].pieceType().equals(PieceType.WHITE_ROOK)){
                 rightRook = chessGame.chessBoard[7][7];
             }
         }
+
         castling(isPieceMove, king, leftRook, pieceListMap, rightRook);
     }
 
     private void castling(Map<Piece, Boolean> isPieceMove, Piece king, Piece leftRook, Map<Piece, List<int[]>> pieceListMap, Piece rightRook) {
-        if(king != null && !isPieceMove.get(king)){
+
+        if(king != null && isPieceMove!=null && !isPieceMove.get(king)){
             if(rightRook != null && !isPieceMove.get(rightRook)){
                 if((!isWhiteTurn && chessGame.chessBoard[7][6] == null && chessGame.chessBoard[7][5] == null && chessGame.chessBoard[7][4] == null) ||
                         (isWhiteTurn && chessGame.chessBoard[7][5] == null && chessGame.chessBoard[7][6] == null)) {
                     addToMap(pieceListMap, king, new int[]{7, 6});
                 }
             }
-            if(leftRook != null && !isPieceMove.get(leftRook)){
+            if(leftRook != null  && !isPieceMove.get(leftRook)){
                 if((!isWhiteTurn && chessGame.chessBoard[7][1] == null && chessGame.chessBoard[7][2] == null) ||
                         (isWhiteTurn && chessGame.chessBoard[7][1] == null && chessGame.chessBoard[7][2] == null && chessGame.chessBoard[7][3] == null)){
                     addToMap(pieceListMap, king, new int[]{7, 1});
@@ -194,7 +201,6 @@ public class TileMouseListener extends MouseAdapter {
         }
         return copy;
     }
-
 
     private void addToMap(Map<Piece, List<int[]>> map, Piece piece, int[] value) {
         map.computeIfAbsent(piece, k -> new ArrayList<>()).add(value);

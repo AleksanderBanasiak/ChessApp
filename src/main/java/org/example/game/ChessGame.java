@@ -42,7 +42,7 @@ public class ChessGame {
     private int selectedCol = -1;
     private boolean isWhiteTurn = true;
 
-    public void game(){
+    public void game() {
         configureFrame();
         configureBoardPanel();
         createBoard();
@@ -55,6 +55,8 @@ public class ChessGame {
         resetBoardColors();
         isWhiteTurn = true;
         updateBoardIcons();
+        isPieceMove = new HashMap<>();
+        addPiecesToMap();
     }
 
 
@@ -65,12 +67,12 @@ public class ChessGame {
 
     private void configureBoardPanel() {
         jPanel.setLayout(new GridLayout(8, 8));
-        jPanel.setPreferredSize(new Dimension(1000, 1000));
+        jPanel.setPreferredSize(new Dimension(800, 800));
         frame.add(jPanel);
     }
 
     private void configureFrame() {
-        frame.setSize(1000 ,1000);
+        frame.setSize(800 ,800);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,7 +80,6 @@ public class ChessGame {
     }
 
     public void createBoard(){
-
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 JButton tile = new JButton();
@@ -98,20 +99,15 @@ public class ChessGame {
         }
     }
 
-
-
     public void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         Piece piece = chessBoard[fromRow][fromCol];
         markPiece(piece);
 
-
-        if(piece != null && isPiece(piece) && kingMove(fromCol, toCol, -1)) {
+        if(piece != null && isKing(piece) && kingMove(fromCol, toCol, -1)) {
             doCastling(fromRow, fromCol, toRow, toCol, piece, 7, -1);
         }
-        else if(piece != null && isPiece(piece) && kingMove(fromCol, toCol, 1)){
-
+        else if(piece != null && isKing(piece) && kingMove(fromCol, toCol, 1)){
             doCastling(fromRow, fromCol, toRow, toCol, piece, 0, 1);
-
         }else {
             chosenPieceMove(fromRow, fromCol, toRow, toCol, chessBoard[fromRow][fromCol]);
         }
@@ -138,7 +134,7 @@ public class ChessGame {
         return (toCol == fromCol - (when *2)) ||  (toCol == fromCol - (when *3));
     }
 
-    private static boolean isPiece(Piece piece) {
+    private static boolean isKing(Piece piece) {
         return piece.pieceType() == PieceType.BLACK_KING || piece.pieceType() == PieceType.WHITE_KING;
     }
 
@@ -176,19 +172,14 @@ public class ChessGame {
             }
         }
     }
-
-
     private void addPiecesToMap(){
-
-        isPieceMove.put(chessBoard[0][0], false);
-        isPieceMove.put(chessBoard[0][7], false);
-        isPieceMove.put(chessBoard[0][4], false);
-        isPieceMove.put(chessBoard[7][4], false);
-        isPieceMove.put(chessBoard[7][0], false);
-        isPieceMove.put(chessBoard[7][7], false);
-
+            isPieceMove.put(chessBoard[0][0], false);
+            isPieceMove.put(chessBoard[0][7], false);
+            isPieceMove.put(chessBoard[0][4], false);
+            isPieceMove.put(chessBoard[7][4], false);
+            isPieceMove.put(chessBoard[7][0], false);
+            isPieceMove.put(chessBoard[7][7], false);
     }
-
 
 
 }
